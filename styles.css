@@ -1,0 +1,120 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #222;
+}
+
+#player, #ball {
+    position: absolute;
+    background-color: #fff;
+}
+
+#player {
+    width: 100px;
+    height: 20px;
+    bottom: 20px;
+}
+
+#ball {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+#score {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    font-size: 24px;
+}
+
+#start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+}
+
+.color-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .color-btn.selected {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .powerup {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: none;
+}
+
+#powerup1 {
+    background-image: url('burger.png');
+}
+
+#powerup2 {
+    background-image: url('clock.png');
+}
+
+#powerup3 {
+    background-image: url('discoball.png');
+}
+
+#powerup4 {
+    background-image: url('invert.png');
+}
+
+
+
+#powerUpSize, #powerUpSpeed, #powerUpDisco, #powerUpInvert {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    display: none;
+}
+
+#powerUpSize {
+    background-image: url('burger.png');
+    background-size: cover;
+   
+  }
+
+#powerUpSpeed {
+    background-image: url('clock.png');
+    background-size: cover;
+}
+
+#powerUpDisco {
+    background-image: url('discoball.png');
+    background-size: cover;
+   
+ 
+}
+
+#powerUpInvert {
+    background-image: url('invert.png');
+    background-size: cover;
+}
