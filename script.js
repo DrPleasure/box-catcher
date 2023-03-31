@@ -331,7 +331,7 @@ function movePlayer(e) {
   
     const leftKey = 'ArrowLeft';
     const rightKey = 'ArrowRight';
-    const moveDistance = 50;
+    const moveDistance = 35;
   
     if (e.key === leftKey) {
       playerPosX += invertedControlActive ? moveDistance : -moveDistance;
