@@ -28,6 +28,8 @@ let activePowerUps = []; // array to store active powerups
 
 let invertedControlActive = false;
 
+let lastPowerUpSpawnTime = 0;
+
 
 let sizePowerUpTimeout;
 let speedPowerUpTimeout;
@@ -229,6 +231,8 @@ async function startAudioContext() {
         }
     }
 }
+
+
 
 
 startGameButton.addEventListener('click', async () => {
@@ -540,14 +544,11 @@ async function applyPowerUpEffect(powerUp) {
   
   
 
+  function getRandomPowerUp() {
+    const powerUps = ['disco', 'speed', 'invert', 'size'];
+    return powerUps[Math.floor(Math.random() * powerUps.length)];
+  }
   
-  
-
-  
-  
-
-  
-
 
 
 
@@ -556,44 +557,56 @@ async function applyPowerUpEffect(powerUp) {
       return;
     }
   
-    const powerUpType = Math.floor(Math.random() * 4);
-    const powerUpPosX = Math.random() * (game.offsetWidth - 50);
-    const powerUpPosY = Math.random() * game.offsetHeight / 2; // Set initial top position to a random value between 0 and half of game height
+    let powerUpSpawnProbability = 0;
   
-    switch (powerUpType) {
-      case 0:
-        console.log('Spawning power-up size');
-        powerups[0].type = 'size';
-        powerups[0].element.style.display = 'block';
-        powerups[0].element.style.left = powerUpPosX + 'px';
-        powerups[0].element.style.top = powerUpPosY + 'px';
-        break;
-      case 1:
-        console.log('Spawning power-up speed');
-        powerups[1].type = 'speed';
-        powerups[1].element.style.display = 'block';
-        powerups[1].element.style.left = powerUpPosX + 'px';
-        powerups[1].element.style.top = powerUpPosY + 'px';
-        break;
-      case 2:
-        console.log('Spawning power-up disco');
-        powerups[2].type = 'disco';
-        powerups[2].element.style.display = 'block';
-        powerups[2].element.style.left = powerUpPosX + 'px';
-        powerups[2].element.style.top = powerUpPosY + 'px';
-        break;
-      case 3:
-        console.log('Spawning power-up invert');
-        powerups[3].type = 'invert';
-        powerups[3].element.style.display = 'block';
-        powerups[3].element.style.left = powerUpPosX + 'px';
-        powerups[3].element.style.top = powerUpPosY + 'px';
-        break;
+    const calculatePowerUpSpawnProbability = (timeElapsed) => {
+      return timeElapsed / 10000;
+    };
+  
+    const elapsedTime = new Date().getTime() - lastPowerUpSpawnTime;
+    powerUpSpawnProbability = calculatePowerUpSpawnProbability(elapsedTime);
+  
+    if (powerUpSpawnProbability >= Math.random()) {
+      const powerUpType = Math.floor(Math.random() * 4);
+      const powerUpPosX = Math.random() * (game.offsetWidth - 50);
+      const powerUpPosY = Math.random() * game.offsetHeight / 2; // Set initial top position to a random value between 0 and half of game height
+  
+      switch (powerUpType) {
+        case 0:
+          console.log('Spawning power-up size');
+          powerups[0].type = 'size';
+          powerups[0].element.style.display = 'block';
+          powerups[0].element.style.left = powerUpPosX + 'px';
+          powerups[0].element.style.top = powerUpPosY + 'px';
+          break;
+        case 1:
+          console.log('Spawning power-up speed');
+          powerups[1].type = 'speed';
+          powerups[1].element.style.display = 'block';
+          powerups[1].element.style.left = powerUpPosX + 'px';
+          powerups[1].element.style.top = powerUpPosY + 'px';
+          break;
+        case 2:
+          console.log('Spawning power-up disco');
+          powerups[2].type = 'disco';
+          powerups[2].element.style.display = 'block';
+          powerups[2].element.style.left = powerUpPosX + 'px';
+          powerups[2].element.style.top = powerUpPosY + 'px';
+          break;
+        case 3:
+          console.log('Spawning power-up invert');
+          powerups[3].type = 'invert';
+          powerups[3].element.style.display = 'block';
+          powerups[3].element.style.left = powerUpPosX + 'px';
+          powerups[3].element.style.top = powerUpPosY + 'px';
+          break;
+      }
+  
+      activePowerUp = true;
+      lastPowerUpSpawnTime = new Date().getTime();
     }
-  
-    activePowerUp = true;
   }
-
+  
 
 
 
