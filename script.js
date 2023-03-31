@@ -321,14 +321,29 @@ function movePlayer(e) {
   }
   
   async function handleKeyPress(e) {
-      await startAudioContext();
-      if (invertedControlActive) {
-          movePlayerInverted(e);
-      } else {
-          movePlayer(e);
-      }
+    await startAudioContext();
+  
+    const leftKey = 'ArrowLeft';
+    const rightKey = 'ArrowRight';
+    const moveDistance = 50;
+  
+    if (e.key === leftKey) {
+      playerPosX += invertedControlActive ? moveDistance : -moveDistance;
+    } else if (e.key === rightKey) {
+      playerPosX += invertedControlActive ? -moveDistance : moveDistance;
+    }
+  
+    if (playerPosX < 0) {
+      playerPosX = 0;
+    } else if (playerPosX > game.offsetWidth - player.offsetWidth) {
+      playerPosX = game.offsetWidth - player.offsetWidth;
+    }
+  
+    player.style.left = playerPosX + 'px';
   }
   
+  document.addEventListener('keydown', handleKeyPress);
+
 
 
 const powerups = [  { element: powerUpSize, x: powerUpSizePosX, y: powerUpSizePosY, speed: 2, type: 'size' },  { element: powerUpSpeed, x: powerUpSpeedPosX, y: powerUpSpeedPosY, speed: 2, type: 'speed' },  { element: powerUpDisco, x: powerUpDiscoPosX, y: powerUpDiscoPosY, speed: 2, type: 'disco' },  { element: powerUpInvert, x: powerUpInvertPosX, y: powerUpInvertPosY, speed: 2, type: 'invert' }];
@@ -369,35 +384,9 @@ function movePowerUp() {
     }
   });
 
-  function movePlayerInverted(e) {
-    const leftKey = 'ArrowLeft';
-    const rightKey = 'ArrowRight';
-
-    if (e.key === leftKey) {
-        playerPosX += 75;
-    } else if (e.key === rightKey) {
-        playerPosX -= 75;
-    }
-
-    if (playerPosX < 0) {
-        playerPosX = 0;
-    } else if (playerPosX > game.offsetWidth - player.offsetWidth) {
-        playerPosX = game.offsetWidth - player.offsetWidth;
-    }
-
-    player.style.left = playerPosX + 'px';
-}
 
 
 
-setTimeout(() => {
-    document.removeEventListener('keydown', movePlayerInverted);
-    document.addEventListener('keydown', movePlayer);
-}, 5000); // Reset control inversion after 5 seconds
-
-
-document.removeEventListener('keydown', movePlayer);
-document.addEventListener('keydown', movePlayerInverted);
 
 function gameLoop() {
     if (gameStarted) {
@@ -516,17 +505,17 @@ async function applyPowerUpEffect(powerUp) {
         backgroundMusicPaused = false;
       }
     }, 7000);
-  
-    } else if (powerUp === 'invert') {
-      clearTimeout(invertPowerUpTimeout);
-      applyControlInversion(activePowerUp);
-  
-      invertPowerUpTimeout = setTimeout(() => {
-        stopInvertedControlsEffect();
-        activePowerUp = false;
-      }, 5000);
-  
-    }
+  } else if (powerUp === 'invert') {
+    clearTimeout(invertPowerUpTimeout);
+    invertedControlActive = true;
+
+    playSound(giggleSoundBuffer); // Add this line to play the giggle sound
+
+    invertPowerUpTimeout = setTimeout(() => {
+      invertedControlActive = false;
+      activePowerUp = false;
+    }, 5000);
+  }
   }
   
  
