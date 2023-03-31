@@ -17,14 +17,14 @@ body {
 }
 
 #player {
-    width: 100px;
+    width: 125px;
     height: 20px;
     bottom: 20px;
 }
 
 #ball {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
 }
 

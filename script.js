@@ -13,6 +13,8 @@ let platformColor = 'red';
 const AudioContext = window.AudioContext || window.AudioContext;
 const audioContext = new AudioContext();
 
+
+let currentDiscoSoundSource = null;
 let catchSoundBuffer;
 let missSoundBuffer;
 let backgroundMusicBuffer;
@@ -135,10 +137,8 @@ function playDiscoSound() {
 
   function stopDiscoSound() {
     if (discoSoundSource) {
-      discoSoundPlaybackPosition = audioContext.currentTime - discoSoundStartedAt;
       discoSoundSource.stop();
       discoSoundSource = null;
-      discoSoundGain = null;
     }
   }
   
@@ -164,61 +164,58 @@ let backgroundMusicGain;
 let backgroundMusicPaused = false;
 
 function playBackgroundMusic() {
-    if (!backgroundMusicBuffer) {
-      console.error('Background music buffer not loaded');
-      return;
-    }
-    
-    if (!audioContext) {
-      console.warn('Audio context not initialized');
-      return;
-    }
-  
-    if (audioContext.state !== 'running') {
-      console.warn('Audio context is not running');
-      return;
-    }
-  
-    if (backgroundMusicSource && !backgroundMusicSource.paused) {
-      console.warn('Background music is already playing');
-      return;
-    }
-  
-    backgroundMusicSource = audioContext.createBufferSource();
-    backgroundMusicSource.buffer = backgroundMusicBuffer;
-    backgroundMusicSource.loop = true;
-    
-    // Create a GainNode to control the volume of the background music
-    backgroundMusicGain = audioContext.createGain();
-    backgroundMusicSource.connect(backgroundMusicGain);
-    backgroundMusicGain.connect(audioContext.destination);
-    backgroundMusicGain.gain.value = 0.5; // Set the initial volume to half
-    
-    backgroundMusicSource.start(0); // Start playing from the beginning
+  if (!backgroundMusicBuffer) {
+    console.error('Background music buffer not loaded');
+    return;
   }
+
+  if (!audioContext) {
+    console.warn('Audio context not initialized');
+    return;
+  }
+
+  if (audioContext.state !== 'running') {
+    console.warn('Audio context is not running');
+    return;
+  }
+
+  if (backgroundMusicSource) {
+    console.warn('Background music is already playing');
+    return;
+  }
+
+  backgroundMusicSource = audioContext.createBufferSource();
+  backgroundMusicSource.buffer = backgroundMusicBuffer;
+  backgroundMusicSource.loop = true;
+
+  // Create a GainNode to control the volume of the background music
+  backgroundMusicGain = audioContext.createGain();
+  backgroundMusicSource.connect(backgroundMusicGain);
+  backgroundMusicGain.connect(audioContext.destination);
+  backgroundMusicGain.gain.value = 0.5; // Set the initial volume to half
+
+  backgroundMusicSource.start(0); // Start playing from the beginning
+}
 
 
 function pauseBackgroundMusic() {
-    if (backgroundMusicSource && !backgroundMusicPaused) {
-      backgroundMusicSource.stop();
-      backgroundMusicPaused = true;
-      backgroundMusicSource = null;
+  if (backgroundMusicSource) {
+    backgroundMusicSource.stop();
+    backgroundMusicSource = null;
+    backgroundMusicPaused = true;
+  }
+}
+
+  
+  function resumeBackgroundMusic() {
+    if (backgroundMusicPaused) {
+      backgroundMusicPaused = false;
+      if (!backgroundMusicSource) {
+        playBackgroundMusic();
+      }
     }
   }
   
-
-  function resumeBackgroundMusic() {
-    if (backgroundMusicSource) {
-      if (backgroundMusicPaused) {
-        backgroundMusicSource.start(0, backgroundMusicPausedAt);
-        backgroundMusicPaused = false;
-      } else if (backgroundMusicSource.state === "suspended") {
-        audioContext.resume();
-      }
-    } else {
-      playSound(backgroundMusicBuffer, true);
-    }
-  }
 
 
 async function startAudioContext() {
@@ -480,38 +477,46 @@ async function applyPowerUpEffect(powerUp) {
         ballSpeed *= 2; // Revert the ball speed
         activePowerUp = false;
       }, 5000); // Reset ball speed after 5 seconds
-   } else if (powerUp === 'disco') {
-    clearTimeout(discoPowerUpTimeout);
-    clearInterval(discoInterval);
-
-    if (backgroundMusicSource && !backgroundMusicSource.paused) {
-      pauseBackgroundMusic();
-      backgroundMusicPaused = true;
-    }
-
-    let playerColor = player.style.backgroundColor;
-    let ballColor = ball.style.backgroundColor;
-
-    playSound(discoSoundBuffer, true).then(discoSoundSource => {
-      discoInterval = setInterval(() => {
-        player.style.backgroundColor = randomColor();
-        ball.style.backgroundColor = randomColor();
-      }, 200);
-    });
-
-    discoPowerUpTimeout = setTimeout(() => {
+    } else if (powerUp === 'disco') {
+      clearTimeout(discoPowerUpTimeout);
       clearInterval(discoInterval);
-      stopDiscoSound();
-      lastColor = player.style.backgroundColor;
-      player.style.backgroundColor = playerColor;
-      ball.style.backgroundColor = ballColor;
-      activePowerUp = false;
-      if (backgroundMusicPaused) {
-        resumeBackgroundMusic();
-        backgroundMusicPaused = false;
+    
+      if (backgroundMusicSource && !backgroundMusicPaused) {
+        pauseBackgroundMusic();
       }
-    }, 7000);
-  } else if (powerUp === 'invert') {
+    
+      if (discoSoundSource) {
+        stopDiscoSound();
+      }
+    
+      let playerColor = player.style.backgroundColor;
+      let ballColor = ball.style.backgroundColor;
+    
+      playSound(discoSoundBuffer, true).then(newDiscoSoundSource => {
+        discoSoundSource = newDiscoSoundSource;
+    
+        discoInterval = setInterval(() => {
+          player.style.backgroundColor = randomColor();
+          ball.style.backgroundColor = randomColor();
+        }, 200);
+      });
+    
+      discoPowerUpTimeout = setTimeout(() => {
+        clearInterval(discoInterval);
+        stopDiscoSound();
+        lastColor = player.style.backgroundColor;
+        player.style.backgroundColor = playerColor;
+        ball.style.backgroundColor = ballColor;
+        activePowerUp = false;
+        if (backgroundMusicPaused) {
+          resumeBackgroundMusic();
+        }
+      }, 10000); // 10 seconds
+    }
+    
+    
+    
+   else if (powerUp === 'invert') {
     clearTimeout(invertPowerUpTimeout);
     invertedControlActive = true;
 
