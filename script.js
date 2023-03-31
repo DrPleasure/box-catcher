@@ -38,9 +38,11 @@ let invertPowerUpTimeout;
 let playerPosX = game.offsetWidth / 2 - player.offsetWidth / 2;
 let ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
 let ballPosY = 0;
-let ballSpeed = 2;
 let score = 0;
 let powerUpSpeedY = -2;
+
+const initialBallSpeed = 2;
+let ballSpeed = initialBallSpeed;
 
 
 const powerUpSize = document.createElement('div');
@@ -391,7 +393,7 @@ function movePowerUp() {
 
 
 
-function gameLoop() {
+  function gameLoop() {
     if (gameStarted) {
       if (fastDrop) {
         ballPosY += ballSpeed * 3;
@@ -412,10 +414,13 @@ function gameLoop() {
   
         score++;
         ballSpeed += 0.2;
+        console.log('Current ball speed:', ballSpeed);
         updateScore();
         resetBall();
         playSound(catchSoundBuffer);
       } else if (ballPosY > game.offsetHeight) {
+        console.log('Ball speed reset to:', initialBallSpeed);
+        ballSpeed = initialBallSpeed;
         resetBall();
         playSound(missSoundBuffer);
       }
@@ -427,7 +432,8 @@ function gameLoop() {
   
     requestAnimationFrame(gameLoop);
   }
-
+  
+  
 
 
 
