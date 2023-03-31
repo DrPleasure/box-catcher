@@ -232,14 +232,20 @@ async function startAudioContext() {
 }
 
 
-startGameButton.addEventListener('click', () => {
-    ball.style.backgroundColor = ballColor;
-    player.style.backgroundColor = platformColor;
-    startScreen.style.display = 'none';
-    gameStarted = true;
-        movePowerUp(); // Add this line
+startGameButton.addEventListener('click', async () => {
+  ball.style.backgroundColor = ballColor;
+  player.style.backgroundColor = platformColor;
+  startScreen.style.display = 'none';
+  gameStarted = true;
+  movePowerUp();
 
+  // Call the startAudioContext function here
+  await startAudioContext();
+
+  // Start playing the background music after the AudioContext is resumed
+  playBackgroundMusic();
 });
+
 
 function isColliding(element1, element2) {
     const rect1 = element1.getBoundingClientRect();
