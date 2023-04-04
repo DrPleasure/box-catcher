@@ -202,13 +202,7 @@ function playBackgroundMusic() {
 }
 
 
-function stopAllAudio() {
-  // Stop background music
-  pauseBackgroundMusic();
 
-  // Close the AudioContext
-  audioContext.close();
-}
 
 
 function pauseBackgroundMusic() {
@@ -229,6 +223,13 @@ function pauseBackgroundMusic() {
     }
   }
   
+  function stopAllAudio() {
+    // Stop background music
+    pauseBackgroundMusic();
+  
+    // Close the AudioContext
+    audioContext.close();
+  }
 
 
 async function startAudioContext() {
@@ -685,7 +686,11 @@ async function applyPowerUpEffect(powerUp) {
   }
   
   
-  
+  // Detect if game is over = score resets to 0
+function onFetchGameOver() {
+  window.parent.postMessage('gameEnded', '*');
+}
+
   
   
   
@@ -733,10 +738,6 @@ function hidePowerUps() {
 
 }
 
-// Detect if game is over = score resets to 0
-function onFetchGameOver() {
-  window.parent.postMessage('gameEnded', '*');
-}
 
 
 
