@@ -619,18 +619,16 @@ async function applyPowerUpEffect(powerUp) {
 
 
 
-
   function resetBall() {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
         score = 0;
         updateScore();
 
-        // Stop all audio before hiding the iframe
+        // Stop all audio before sending the gameEnded message
         stopAllAudio();
 
         if (window.parent !== window) {
-            let event = new CustomEvent("gameEnded");
-            window.parent.dispatchEvent(event);
+            window.parent.postMessage('gameEnded', '*');
         }
     }
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
