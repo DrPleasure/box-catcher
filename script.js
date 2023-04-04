@@ -674,12 +674,9 @@ async function applyPowerUpEffect(powerUp) {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
       score = 0;
       updateScore();
-  
-      // Check if the game is being played in an iframe
       if (window.parent !== window) {
-        // Check if the iframe element exists
-        let iframe = window.frameElement;
-        if (iframe) {
+        if (window.parent.document.getElementById('game-iframe')) {
+          let iframe = window.parent.document.getElementById('game-iframe');
           iframe.style.display = 'none';
           if (window.parent.pauseBackgroundMusic) {
             window.parent.pauseBackgroundMusic();
@@ -688,19 +685,17 @@ async function applyPowerUpEffect(powerUp) {
           if (portfolioContent) {
             portfolioContent.style.display = 'block';
           }
-          // Post a message to the parent window
           window.parent.postMessage('gameEnded', '*');
         }
-      } else {
-        // The game is being played in the browser, so don't stop the music
-        // and don't display the portfolio content.
       }
     }
+  
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
   }
+  
   
   
   
