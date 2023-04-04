@@ -338,16 +338,24 @@ function movePlayer(e) {
       }
   }
   
-  async function handleKeyPress(e) {
+  async function handleKeyPress(e, direction) {
     await startAudioContext();
   
     const leftKey = 'ArrowLeft';
     const rightKey = 'ArrowRight';
     const moveDistance = 35;
   
-    if (e.key === leftKey) {
+    if (e) {
+      if (e.key === leftKey) {
+        direction = 'left';
+      } else if (e.key === rightKey) {
+        direction = 'right';
+      }
+    }
+  
+    if (direction === 'left') {
       playerPosX += invertedControlActive ? moveDistance : -moveDistance;
-    } else if (e.key === rightKey) {
+    } else if (direction === 'right') {
       playerPosX += invertedControlActive ? -moveDistance : moveDistance;
     }
   
@@ -360,7 +368,42 @@ function movePlayer(e) {
     player.style.left = playerPosX + 'px';
   }
   
-  document.addEventListener('keydown', handleKeyPress);
+
+  
+  document.addEventListener('keydown', (e) => {
+    handleKeyPress(e);
+  });
+  
+
+// Add touch event listeners
+game.addEventListener('touchstart', handleTouchStart, false);
+game.addEventListener('touchmove', handleTouchMove, false);
+game.addEventListener('touchend', handleTouchEnd, false);
+
+let touchStartX = null;
+
+function handleTouchStart(event) {
+  event.preventDefault();
+  touchStartX = event.touches[0].clientX;
+}
+
+function handleTouchMove(event) {
+  event.preventDefault();
+  let touchX = event.touches[0].clientX;
+
+  let deltaX = touchX - touchStartX;
+
+  // Decide whether the touch action is horizontal
+  if (deltaX > 0) {
+    handleKeyPress(null, 'right');
+  } else if (deltaX < 0) {
+    handleKeyPress(null, 'left');
+  }
+}
+
+function handleTouchEnd(event) {
+  event.preventDefault();
+}
 
 
 
