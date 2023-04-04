@@ -675,21 +675,9 @@ async function applyPowerUpEffect(powerUp) {
       score = 0;
       updateScore();
       if (window.parent !== window) {
-        if (window.parent.document.getElementById('game-iframe')) {
-          let iframe = window.parent.document.getElementById('game-iframe');
-          iframe.style.display = 'none';
-          if (window.parent.pauseBackgroundMusic) {
-            window.parent.pauseBackgroundMusic();
-          }
-          let portfolioContent = window.parent.document.getElementById('portfolio-content');
-          if (portfolioContent) {
-            portfolioContent.style.display = 'block';
-          }
-          window.parent.postMessage('gameEnded', '*');
-        }
+        window.parent.postMessage('gameOver', '*'); // Send message to parent window
       }
     }
-  
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
