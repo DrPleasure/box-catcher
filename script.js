@@ -256,7 +256,11 @@ startGameButton.addEventListener('click', async () => {
 
   // Start playing the background music after the AudioContext is resumed
   playBackgroundMusic();
+
+  // Enable touch controls
+  touchControlsEnabled = true;
 });
+
 
 
 function isColliding(element1, element2) {
@@ -374,6 +378,8 @@ function movePlayer(e) {
     handleKeyPress(e);
   });
   
+let touchControlsEnabled = false;
+
 
 // Add touch event listeners
 game.addEventListener('touchstart', handleTouchStart, false);
@@ -383,17 +389,18 @@ game.addEventListener('touchend', handleTouchEnd, false);
 let touchStartX = null;
 
 function handleTouchStart(event) {
+  if (!touchControlsEnabled) return;
   event.preventDefault();
   touchStartX = event.touches[0].clientX;
 }
 
 function handleTouchMove(event) {
+  if (!touchControlsEnabled) return;
   event.preventDefault();
   let touchX = event.touches[0].clientX;
 
   let deltaX = touchX - touchStartX;
 
-  // Decide whether the touch action is horizontal
   if (deltaX > 0) {
     handleKeyPress(null, 'right');
   } else if (deltaX < 0) {
@@ -402,8 +409,10 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
+  if (!touchControlsEnabled) return;
   event.preventDefault();
 }
+
 
 
 
@@ -664,21 +673,23 @@ async function applyPowerUpEffect(powerUp) {
 
   function resetBall() {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
-        score = 0;
-        updateScore();
-
-        // Stop all audio before sending the gameEnded message
-        stopAllAudio();
-
-        if (window.parent !== window) {
-            window.parent.postMessage('gameEnded', '*');
+      score = 0;
+      updateScore();
+      if (window.parent !== window) {
+        let iframe = window.frameElement;
+        iframe.style.display = 'none';
+        if (window.parent.pauseBackgroundMusic) {
+          window.parent.pauseBackgroundMusic();
         }
+        window.parent.document.getElementById('portfolio-content').style.display = 'block';
+      }
     }
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
-}
+  }
+  
 
 
 
