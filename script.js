@@ -202,6 +202,15 @@ function playBackgroundMusic() {
 }
 
 
+function stopAllAudio() {
+  // Stop background music
+  pauseBackgroundMusic();
+
+  // Close the AudioContext
+  audioContext.close();
+}
+
+
 function pauseBackgroundMusic() {
   if (backgroundMusicSource) {
     backgroundMusicSource.stop();
@@ -611,14 +620,17 @@ async function applyPowerUpEffect(powerUp) {
 
 
 
-
-
   function resetBall() {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
         score = 0;
         updateScore();
+
+        // Stop all audio before hiding the iframe
+        stopAllAudio();
+
         if (window.parent !== window) {
-            window.parent.postMessage('missedCatch', '*');
+            let event = new CustomEvent("gameEnded");
+            window.parent.dispatchEvent(event);
         }
     }
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
