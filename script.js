@@ -227,9 +227,16 @@ function pauseBackgroundMusic() {
     // Stop background music
     pauseBackgroundMusic();
   
+    // Stop all other sound sources
+    for (let i = 0; i < soundSources.length; i++) {
+      soundSources[i].stop();
+    }
+  
     // Close the AudioContext
-    if (audioContext) {
-      audioContext.close();
+    if (audioContext.state === 'running') {
+      audioContext.suspend().then(function () {
+        return audioContext.close();
+      });
     }
   }
   
