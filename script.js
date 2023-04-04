@@ -618,9 +618,7 @@ async function applyPowerUpEffect(powerUp) {
         score = 0;
         updateScore();
         if (window.parent !== window) {
-            let iframe = window.frameElement;
-            iframe.style.display = 'none';
-            document.getElementById('portfolio-content').style.display = 'block';
+            window.parent.postMessage('missedCatch', '*');
         }
     }
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
@@ -628,6 +626,7 @@ async function applyPowerUpEffect(powerUp) {
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
 }
+
 
 
   
