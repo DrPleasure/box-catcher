@@ -674,34 +674,28 @@ async function applyPowerUpEffect(powerUp) {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
       score = 0;
       updateScore();
-  
-      // Access the parent window from the iframe
-      let parentWindow = window.parent;
-  
-      if (parentWindow !== window) {
-        let iframe = parentWindow.document.getElementById('game-iframe');
+      if (window.parent !== window) {
+        let iframe = window.frameElement;
         iframe.style.display = 'none';
-        
-        if (parentWindow.pauseBackgroundMusic) {
-          parentWindow.pauseBackgroundMusic();
+        if (window.parent.pauseBackgroundMusic) {
+          window.parent.pauseBackgroundMusic();
         }
-        
-        let portfolioContent = parentWindow.document.getElementById('portfolio-content');
-        
+        let portfolioContent = window.parent.document.getElementById('portfolio-content');
         if (portfolioContent) {
           portfolioContent.style.display = 'block';
         }
-        
-        // Send a message to the parent window to indicate that the game has ended
-        parentWindow.postMessage('gameEnded', '*');
+        window.parent.postMessage('gameEnded', '*');
+      } else {
+        // The game is being played in the browser, so don't stop the music
+        // and don't display the portfolio content.
       }
     }
-  
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
   }
+  
   
   
   
@@ -750,8 +744,9 @@ function hidePowerUps() {
 
 // Detect if game is over = score resets to 0
 function onFetchGameOver() {
-  window.parent.postMessage('fetchGameOver', '*');
+  window.parent.postMessage('gameEnded', '*');
 }
+
 
 
 hidePowerUps();
