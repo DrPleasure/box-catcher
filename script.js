@@ -676,15 +676,20 @@ async function applyPowerUpEffect(powerUp) {
       updateScore();
       if (window.parent !== window) {
         let iframe = window.frameElement;
-        iframe.style.display = 'none';
+        console.log('iframe:', iframe);
+        if (iframe) {
+          iframe.style.display = 'none';
+        }
         if (window.parent.pauseBackgroundMusic) {
           window.parent.pauseBackgroundMusic();
         }
         let portfolioContent = window.parent.document.getElementById('portfolio-content');
+        console.log('portfolioContent:', portfolioContent);
         if (portfolioContent) {
           portfolioContent.style.display = 'block';
+          void portfolioContent.offsetHeight;
+          window.dispatchEvent(new Event('resize'));
         }
-        window.parent.postMessage('gameEnded', '*');
       } else {
         // The game is being played in the browser, so don't stop the music
         // and don't display the portfolio content.
@@ -695,6 +700,7 @@ async function applyPowerUpEffect(powerUp) {
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
   }
+  
   
   
   
