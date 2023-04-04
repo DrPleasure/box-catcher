@@ -674,21 +674,29 @@ async function applyPowerUpEffect(powerUp) {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
       score = 0;
       updateScore();
-      if (window.parent !== window) {
-        let iframe = window.frameElement;
+  
+      // Access the parent window from the iframe
+      let parentWindow = window.parent;
+  
+      if (parentWindow !== window) {
+        let iframe = parentWindow.document.getElementById('game-iframe');
         iframe.style.display = 'none';
-        if (window.parent.pauseBackgroundMusic) {
-          window.parent.pauseBackgroundMusic();
+        
+        if (parentWindow.pauseBackgroundMusic) {
+          parentWindow.pauseBackgroundMusic();
         }
-        let portfolioContent = window.parent.document.getElementById('portfolio-content');
+        
+        let portfolioContent = parentWindow.document.getElementById('portfolio-content');
+        
         if (portfolioContent) {
           portfolioContent.style.display = 'block';
         }
-      } else {
-        // The game is being played in the browser, so don't stop the music
-        // and don't display the portfolio content.
+        
+        // Send a message to the parent window to indicate that the game has ended
+        parentWindow.postMessage('gameEnded', '*');
       }
     }
+  
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
