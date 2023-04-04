@@ -663,6 +663,10 @@ function hidePowerUps() {
 
 }
 
+// Detect if game is over = score resets to 0
+function onFetchGameOver() {
+  window.parent.postMessage('fetchGameOver', '*');
+}
 
 
 hidePowerUps();
