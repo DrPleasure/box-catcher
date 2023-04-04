@@ -615,18 +615,20 @@ async function applyPowerUpEffect(powerUp) {
 
   function resetBall() {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
-        // Player missed the ball, hide the game iframe and show the portfolio content
-        const fetchGameIframe = document.getElementById('fetch-game-iframe');
-        fetchGameIframe.style.display = 'none';
-        document.getElementById('portfolio-content').style.display = 'block';
+        score = 0;
+        updateScore();
+        if (window.parent !== window) {
+            let iframe = window.frameElement;
+            iframe.style.display = 'none';
+            document.getElementById('portfolio-content').style.display = 'block';
+        }
     }
-    score = 0;
-    updateScore();
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
 }
+
 
   
 
