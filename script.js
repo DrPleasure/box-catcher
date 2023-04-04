@@ -228,8 +228,11 @@ function pauseBackgroundMusic() {
     pauseBackgroundMusic();
   
     // Close the AudioContext
-    audioContext.close();
+    if (audioContext) {
+      audioContext.close();
+    }
   }
+  
 
 
 async function startAudioContext() {
