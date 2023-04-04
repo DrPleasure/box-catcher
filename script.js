@@ -670,7 +670,6 @@ async function applyPowerUpEffect(powerUp) {
   
 
 
-
   function resetBall() {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
       score = 0;
@@ -681,7 +680,10 @@ async function applyPowerUpEffect(powerUp) {
         if (window.parent.pauseBackgroundMusic) {
           window.parent.pauseBackgroundMusic();
         }
-        window.parent.document.getElementById('portfolio-content').style.display = 'block';
+        let portfolioContent = window.parent.document.getElementById('portfolio-content');
+        if (portfolioContent) {
+          portfolioContent.style.display = 'block';
+        }
       } else {
         // The game is being played in the browser, so don't stop the music
         // and don't display the portfolio content.
@@ -692,6 +694,7 @@ async function applyPowerUpEffect(powerUp) {
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
   }
+  
   
   
 
