@@ -613,17 +613,23 @@ async function applyPowerUpEffect(powerUp) {
 
 
 
-
-function resetBall() {
+  function resetBall() {
     if (ballPosY + ball.offsetHeight > game.offsetHeight) {
-        score = 0;
-        updateScore();
+      score = 0;
+      updateScore();
+      
+      // Check if game is running inside an iframe
+      if (window.self !== window.top) {
+        // Send message to parent window to hide iframe and display portfolio
+        window.parent.postMessage({ type: 'gameOver' }, '*');
+      }
     }
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
     ballPosY = -ball.offsetHeight;
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
-}
+  }
+  
 
 function updateScore() {
     scoreDisplay.textContent = 'Score: ' + score;
