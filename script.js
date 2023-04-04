@@ -682,6 +682,9 @@ async function applyPowerUpEffect(powerUp) {
           window.parent.pauseBackgroundMusic();
         }
         window.parent.document.getElementById('portfolio-content').style.display = 'block';
+      } else {
+        // The game is being played in the browser, so don't stop the music
+        // and don't display the portfolio content.
       }
     }
     ballPosX = Math.random() * (game.offsetWidth - ball.offsetWidth);
@@ -689,6 +692,7 @@ async function applyPowerUpEffect(powerUp) {
     ball.style.left = ballPosX + 'px';
     ball.style.top = ballPosY + 'px';
   }
+  
   
 
 
