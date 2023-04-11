@@ -240,6 +240,14 @@ function pauseBackgroundMusic() {
     }
   }
   
+// Add this event listener to the game's JavaScript code
+window.addEventListener('message', function (event) {
+  if (event.data === 'stopAllAudio') {
+    stopAllAudio();
+  }
+}, false);
+
+
 
 
 async function startAudioContext() {
