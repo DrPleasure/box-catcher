@@ -696,10 +696,12 @@ async function applyPowerUpEffect(powerUp) {
   }
   
   
-  // Detect if game is over = score resets to 0
-function onFetchGameOver() {
-  window.parent.postMessage('gameEnded', '*');
+// Add this function to the game's JavaScript code
+function gameOver() {
+  // Send a message to the parent window to inform that the game is over
+  window.parent.postMessage('gameOver', '*');
 }
+
 
   
   
